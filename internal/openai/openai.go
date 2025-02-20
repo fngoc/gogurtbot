@@ -3,36 +3,63 @@ package openai
 import (
 	"context"
 	"fmt"
+	"gogurtbot/internal/config"
 	"gogurtbot/internal/logger"
+	"math/rand"
+	"time"
 
 	gpt "github.com/sashabaranov/go-openai"
 )
 
-var prompt = ``
-
 var client *gpt.Client
-
-const (
-	gptToken = ""
-	gptURL   = ""
-)
 
 // Initialize инициализация конфигурации и клиента gpt модели
 func Initialize() {
-	config := gpt.DefaultConfig(gptToken)
-	config.BaseURL = gptURL
-	client = gpt.NewClientWithConfig(config)
+	conf := gpt.DefaultConfig(config.Configuration.Openai.Token)
+	conf.BaseURL = config.Configuration.Openai.GptURL
+	client = gpt.NewClientWithConfig(conf)
 	logger.Log.Info("Client gpt initialized")
+}
+
+// SendRequestWithResend отправка запроса с докатом в случае ошибки со стороны api
+func SendRequestWithResend(message string) (string, error) {
+	for i := 0; i < config.Configuration.Openai.CountRepeatedRequests; i++ {
+		answer, err := SendMessageWithPrompt(message)
+		randomSecond := rand.Intn(5)
+		timeSleep := time.Duration(randomSecond * int(time.Second))
+
+		if err != nil {
+			logger.Log.Warn(
+				fmt.Sprintf(
+					"Error sending message: %v attempt to resend the request via %ds, we'll repeat %d more times",
+					err, timeSleep/time.Second, config.Configuration.Openai.CountRepeatedRequests-i,
+				),
+			)
+		} else if answer == "" {
+			logger.Log.Warn(
+				fmt.Sprintf(
+					"Empty answer from ML api, attempt to resend the request via %ds we'll repeat %d more times",
+					timeSleep/time.Second, config.Configuration.Openai.CountRepeatedRequests-i,
+				),
+			)
+		} else {
+			return answer, nil
+		}
+
+		time.Sleep(timeSleep)
+	}
+	return "", nil
 }
 
 // SendMessageWithPrompt отправка сообщения в нейронную сеть
 func SendMessageWithPrompt(message string) (string, error) {
+	logger.Log.Debug(fmt.Sprintf("Sending message: %s", message))
 	req := gpt.ChatCompletionRequest{
-		Model: "",
+		Model: "deepseek/deepseek-chat:free",
 		Messages: []gpt.ChatCompletionMessage{
 			{
 				Role:    "system",
-				Content: prompt,
+				Content: config.Configuration.Openai.Prompt,
 			},
 			{
 				Role:    "user",
@@ -48,5 +75,6 @@ func SendMessageWithPrompt(message string) (string, error) {
 		return "", err
 	}
 
+	logger.Log.Debug(fmt.Sprintf("Full response: %+v", resp.Choices[0].Message))
 	return resp.Choices[0].Message.Content, nil
 }

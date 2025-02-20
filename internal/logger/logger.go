@@ -4,13 +4,10 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	Log      = zap.NewNop()
-	loglevel = "INFO"
-)
+var Log = zap.NewNop()
 
-// Initialize инициализация логера
-func Initialize() error {
+// Initialize инициализация логера с переданным уровнем логирования
+func Initialize(loglevel string) error {
 	lvl, err := zap.ParseAtomicLevel(loglevel)
 	if err != nil {
 		return err

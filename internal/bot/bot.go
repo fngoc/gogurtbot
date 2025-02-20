@@ -2,6 +2,7 @@ package bot
 
 import (
 	"fmt"
+	"gogurtbot/internal/config"
 	"gogurtbot/internal/logger"
 	"gogurtbot/internal/openai"
 	"strings"
@@ -17,15 +18,9 @@ var (
 	lastRequestTime time.Time
 )
 
-const (
-	picnicChatID int64  = 0
-	maxQueueSize int    = 50
-	tgToken      string = ""
-)
-
 // Run запуск бота
 func Run() error {
-	botInstant, err := telego.NewBot(tgToken, telego.WithDefaultLogger(false, true))
+	botInstant, err := telego.NewBot(config.Configuration.Telegram.Token, telego.WithDefaultLogger(false, true))
 	if err != nil {
 		return err
 	}
@@ -60,7 +55,7 @@ func readingMessage(updates <-chan telego.Update) {
 		chatID := update.Message.Chat.ID
 
 		// Проверка, что бот работает в нужном чате
-		if chatID != picnicChatID {
+		if chatID != config.Configuration.Telegram.PicnicChatID {
 			logger.Log.Info(
 				fmt.Sprintf(
 					"Attempting to use the bot in a way that is not in the picnic: %v",
@@ -80,9 +75,9 @@ func readingMessage(updates <-chan telego.Update) {
 				logger.Log.Info(fmt.Sprintf("Comand /what start works: %v", update.Message.Chat))
 
 				message := formatMessage(queue)
-				gptAnswer, err := openai.SendMessageWithPrompt(message)
+				gptAnswer, err := openai.SendRequestWithResend(message)
 				if err != nil {
-					logger.Log.Error(fmt.Sprintf("Error sending chat: %v message: %s", err, message))
+					logger.Log.Error(fmt.Sprintf("Error sending chat: %v", err))
 				}
 
 				if err := sendToChatMessage(bot, chatID, gptAnswer); err != nil {
@@ -90,7 +85,7 @@ func readingMessage(updates <-chan telego.Update) {
 					if err := sendToChatMessage(bot, chatID,
 						fmt.Sprintf("Api нейронки выдала ошибку :("),
 					); err != nil {
-						logger.Log.Error(err.Error())
+						logger.Log.Error(fmt.Sprintf("Error sending in debug chat: %v", err))
 					}
 					// Если команда не выполнилась - очередь сообщений не чистим
 					continue
@@ -110,6 +105,14 @@ func readingMessage(updates <-chan telego.Update) {
 		} else {
 			// В противном случае обновляем очередь сообщений
 			updateQueue(update.Message.Text)
+			logger.Log.Info("Received message: " + update.Message.Text)
+			// Для дебага
+			if err := sendToChatMessage(
+				bot, config.Configuration.Telegram.DebugChatID,
+				fmt.Sprintf("Буфер сообщений: %s", formatMessage(queue)),
+			); err != nil {
+				logger.Log.Error(err.Error())
+			}
 		}
 	}
 }
@@ -132,18 +135,18 @@ func updateQueue(text string) {
 	if len(text) == 0 {
 		return
 	}
-	if len(text) > 350 {
-		text = text[:350]
+	if len(text) > config.Configuration.Telegram.MaxMessageSize {
+		text = text[:config.Configuration.Telegram.MaxMessageSize]
 	}
 
-	if len(queue) == maxQueueSize {
+	if len(queue) >= config.Configuration.Telegram.MaxQueueSize {
 		queue = append(queue[1:], text)
 	} else {
 		queue = append(queue, text)
 	}
 }
 
-// formatMessage форматирования очереди сообщений для нейронной сети
+// formatMessage форматирование очереди сообщений для нейронной сети
 func formatMessage(q []string) string {
 	var sb strings.Builder
 	sb.WriteString("[")
