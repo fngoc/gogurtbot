@@ -1,13 +1,12 @@
 telegram:
   token: #Токен ТГ
   picnicChatID: #Куда будет приходить ответ бота
-  debugChatID: #Куда будет приходить дебаг сообщения бота
   maxMessageSize: #Максимальный размер сообщения
   maxQueueSize: #Максимальное кол-во сообщений в буфере сообщений
+  debugChatID: #Куда будет приходить дебаг сообщения бота
 
 openai:
-  countRepeatedRequests:  #Кол-во попыток отправки запросов
+  countRepeatedRequests: #Кол-во попыток отправки запросов
   token: #Токен ML
   gptURL: #URL ML
-  prompt:  #Промпт для ML
-
+  prompt: #Промпт для ML
