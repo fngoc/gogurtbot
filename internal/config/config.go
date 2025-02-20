@@ -22,7 +22,7 @@ type Config struct {
 		Token                 string `mapstructure:"token"`
 		GptURL                string `mapstructure:"gptURL"`
 		Prompt                string `mapstructure:"prompt"`
-	}
+	} `mapstructure:"openai"`
 }
 
 // Configuration инстант конфигурации
