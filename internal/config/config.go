@@ -26,7 +26,7 @@ type Config struct {
 }
 
 // Configuration инстант конфигурации
-var Configuration *Config
+var Configuration Config
 
 // LoadConfig парсит конфигурационный yaml файл
 func LoadConfig() error {
@@ -45,7 +45,7 @@ func LoadConfig() error {
 		return fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
-	Configuration = &config
+	Configuration = config
 	logger.Log.Info("Loaded config")
 	return nil
 }
