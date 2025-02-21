@@ -10,4 +10,5 @@ openai:
   token: #Токен ML
   gptURL: #URL ML
   whatPrompt: #Промпт для ML, команда /what
+  goodPrompt: #Промпт для ML, команда /good
   sayPrompt: #Промпт для ML, команда /say

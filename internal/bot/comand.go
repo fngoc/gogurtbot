@@ -32,6 +32,28 @@ func whatCommand(update telego.Update, chatID int64) error {
 	return nil
 }
 
+// goodCommand запуск команды /good
+func goodCommand(update telego.Update, chatID int64) error {
+	logger.Log.Info(fmt.Sprintf("Comand /good start works: %v", update.Message.Chat))
+
+	message := formatMessage(queue)
+	gptAnswer, err := openai.SendRequestWithResend(message, config.Configuration.Openai.GoodPrompt)
+	if err != nil {
+		return fmt.Errorf("send request error: %w", err)
+	}
+
+	if err := sendToChatMessage(chatID, gptAnswer+"\n#good"); err != nil {
+		logger.Log.Error(err.Error())
+		if err := sendToChatMessage(chatID, fmt.Sprintf("Api нейронки выдала ошибку :(")); err != nil {
+			return fmt.Errorf("error sending in chat about api error: %w", err)
+		}
+	}
+
+	// Для дебага
+	debugMessage(fmt.Sprintf("Был вызван /good с сообщением: %s", message))
+	return nil
+}
+
 // sayCommand запуск команды /say
 func sayCommand(update telego.Update, chatID int64) error {
 	logger.Log.Info(fmt.Sprintf("Comand /say start works: %v", update.Message.Chat))

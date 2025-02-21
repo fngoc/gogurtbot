@@ -22,6 +22,7 @@ type Config struct {
 		Token                 string `mapstructure:"token"`
 		GptURL                string `mapstructure:"gptURL"`
 		WhatPrompt            string `mapstructure:"whatPrompt"`
+		GoodPrompt            string `mapstructure:"goodPrompt"`
 		SayPrompt             string `mapstructure:"sayPrompt"`
 	} `mapstructure:"openai"`
 }

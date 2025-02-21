@@ -70,6 +70,10 @@ func readingMessage(updates <-chan telego.Update) {
 			}
 			// Очищаем очередь сообщений после успешного выполнения команды
 			queue = queue[:0]
+		case update.Message.Text == "/good":
+			if err := timeoutMiddleware(10, update, chatID, goodCommand); err != nil {
+				logger.Log.Error(err.Error())
+			}
 		case strings.HasPrefix(update.Message.Text, "/say"):
 			if err := timeoutMiddleware(10, update, chatID, sayCommand); err != nil {
 				logger.Log.Error(err.Error())
