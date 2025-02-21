@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gogurtbot/internal/logger"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
@@ -42,12 +43,21 @@ func LoadConfig() error {
 	}
 
 	// Инициализация структуры конфигурации
-	var config Config
-	if err := viper.Unmarshal(&config); err != nil {
+	if err := viper.Unmarshal(&Configuration); err != nil {
 		return fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
-	Configuration = config
+	// Настройка отслеживания изменений в конфигурационном файле
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		logger.Log.Info(fmt.Sprintf("Config file changed: %s", e.Name))
+		if err := viper.Unmarshal(&Configuration); err != nil {
+			logger.Log.Info(fmt.Sprintf("Failed to unmarshal config: %v", err))
+		} else {
+			logger.Log.Info(fmt.Sprintf("Reloaded config"))
+		}
+	})
+
 	logger.Log.Info("Loaded config")
 	return nil
 }
