@@ -13,9 +13,10 @@ import (
 )
 
 var (
-	bot             *telego.Bot
-	queue           []string
-	lastRequestTime time.Time
+	bot                 *telego.Bot
+	queue               []string
+	lastWhatRequestTime time.Time
+	lastSayRequestTime  time.Time
 )
 
 // Run запуск бота
@@ -69,18 +70,18 @@ func readingMessage(updates <-chan telego.Update) {
 			currentTime := time.Now()
 
 			// Проверяем, прошло ли 30 секунд с последнего запроса
-			if currentTime.Sub(lastRequestTime) >= 30*time.Second {
-				lastRequestTime = currentTime
+			if currentTime.Sub(lastWhatRequestTime) >= 30*time.Second {
+				lastWhatRequestTime = currentTime
 
 				logger.Log.Info(fmt.Sprintf("Comand /what start works: %v", update.Message.Chat))
 
 				message := formatMessage(queue)
-				gptAnswer, err := openai.SendRequestWithResend(message)
+				gptAnswer, err := openai.SendRequestWithResend(message, config.Configuration.Openai.WhatPrompt)
 				if err != nil {
 					logger.Log.Error(fmt.Sprintf("Error sending chat: %v", err))
 				}
 
-				if err := sendToChatMessage(bot, chatID, gptAnswer); err != nil {
+				if err := sendToChatMessage(bot, chatID, gptAnswer+" #what"); err != nil {
 					logger.Log.Error(err.Error())
 					if err := sendToChatMessage(bot, chatID,
 						fmt.Sprintf("Api нейронки выдала ошибку :("),
@@ -102,10 +103,50 @@ func readingMessage(updates <-chan telego.Update) {
 					logger.Log.Error(err.Error())
 				}
 			}
+		} else if strings.HasPrefix(update.Message.Text, "/say") {
+			currentTime := time.Now()
+
+			// Проверяем, прошло ли 10 секунд с последнего запроса
+			if currentTime.Sub(lastSayRequestTime) >= 10*time.Second {
+				lastSayRequestTime = currentTime
+
+				logger.Log.Info(fmt.Sprintf("Comand /say start works: %v", update.Message.Chat))
+
+				message := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/say"))
+				gptAnswer, err := openai.SendRequestWithResend("["+message+"]", config.Configuration.Openai.SayPrompt)
+				if err != nil {
+					logger.Log.Error(fmt.Sprintf("Error sending chat: %v", err))
+				}
+
+				if err := sendToChatMessage(bot, chatID, gptAnswer+" #say"); err != nil {
+					logger.Log.Error(err.Error())
+					if err := sendToChatMessage(bot, chatID,
+						fmt.Sprintf("Api нейронки выдала ошибку :("),
+					); err != nil {
+						logger.Log.Error(fmt.Sprintf("Error sending in debug chat: %v", err))
+					}
+				}
+
+				// Для дебага
+				if err := sendToChatMessage(
+					bot, config.Configuration.Telegram.DebugChatID,
+					fmt.Sprintf("Был вызван /say с сообщением: %s", message),
+				); err != nil {
+					logger.Log.Error(err.Error())
+				}
+			} else {
+				// Если прошло меньше 10 секунд
+				logger.Log.Info("Too many request")
+				if err := sendToChatMessage(bot, chatID,
+					fmt.Sprintf("Слишком много запросов, подожди 10 секунд"),
+				); err != nil {
+					logger.Log.Error(err.Error())
+				}
+			}
 		} else {
 			// В противном случае обновляем очередь сообщений
 			updateQueue(update.Message.Text)
-			logger.Log.Info("Received message: " + update.Message.Text)
+			logger.Log.Debug("Received message: " + update.Message.Text)
 			// Для дебага
 			if err := sendToChatMessage(
 				bot, config.Configuration.Telegram.DebugChatID,

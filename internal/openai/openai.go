@@ -22,9 +22,9 @@ func Initialize() {
 }
 
 // SendRequestWithResend отправка запроса с докатом в случае ошибки со стороны api
-func SendRequestWithResend(message string) (string, error) {
+func SendRequestWithResend(message, prompt string) (string, error) {
 	for i := 0; i < config.Configuration.Openai.CountRepeatedRequests; i++ {
-		answer, err := SendMessageWithPrompt(message)
+		answer, err := SendMessageWithPrompt(message, prompt)
 		randomSecond := rand.Intn(5)
 		timeSleep := time.Duration(randomSecond * int(time.Second))
 
@@ -52,18 +52,18 @@ func SendRequestWithResend(message string) (string, error) {
 }
 
 // SendMessageWithPrompt отправка сообщения в нейронную сеть
-func SendMessageWithPrompt(message string) (string, error) {
+func SendMessageWithPrompt(message, prompt string) (string, error) {
 	logger.Log.Debug(fmt.Sprintf("Sending message: %s", message))
 	req := gpt.ChatCompletionRequest{
 		Model: "deepseek/deepseek-chat:free",
 		Messages: []gpt.ChatCompletionMessage{
 			{
 				Role:    "system",
-				Content: config.Configuration.Openai.Prompt,
+				Content: prompt,
 			},
 			{
 				Role:    "user",
-				Content: fmt.Sprintf("Вот текст: %s", message),
+				Content: fmt.Sprintf(" Вот текст: %s", message),
 			},
 		},
 		Temperature: 0.7,

@@ -21,7 +21,8 @@ type Config struct {
 		CountRepeatedRequests int    `mapstructure:"countRepeatedRequests"`
 		Token                 string `mapstructure:"token"`
 		GptURL                string `mapstructure:"gptURL"`
-		Prompt                string `mapstructure:"prompt"`
+		WhatPrompt            string `mapstructure:"whatPrompt"`
+		SayPrompt             string `mapstructure:"sayPrompt"`
 	} `mapstructure:"openai"`
 }
 

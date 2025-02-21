@@ -9,4 +9,5 @@ openai:
   countRepeatedRequests: #Кол-во попыток отправки запросов
   token: #Токен ML
   gptURL: #URL ML
-  prompt: #Промпт для ML
+  whatPrompt: #Промпт для ML, команда /what
+  sayPrompt: #Промпт для ML, команда /say
