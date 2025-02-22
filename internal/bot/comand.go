@@ -2,9 +2,9 @@ package bot
 
 import (
 	"fmt"
+	"gogurtbot/internal/ai"
 	"gogurtbot/internal/config"
 	"gogurtbot/internal/logger"
-	"gogurtbot/internal/openai"
 	"strings"
 
 	"github.com/mymmrac/telego"
@@ -15,7 +15,7 @@ func whatCommand(update telego.Update, chatID int64) error {
 	logger.Log.Info(fmt.Sprintf("Comand /what start works: %v", update.Message.Chat))
 
 	message := formatMessage(queue)
-	gptAnswer, err := openai.SendRequestWithResend(message, config.Configuration.Openai.WhatPrompt)
+	gptAnswer, err := ai.SendRequestWithResend(message, config.Configuration.Ai.WhatPrompt)
 	if err != nil {
 		return fmt.Errorf("send request error: %w", err)
 	}
@@ -37,7 +37,7 @@ func goodCommand(update telego.Update, chatID int64) error {
 	logger.Log.Info(fmt.Sprintf("Comand /good start works: %v", update.Message.Chat))
 
 	message := formatMessage(queue)
-	gptAnswer, err := openai.SendRequestWithResend(message, config.Configuration.Openai.GoodPrompt)
+	gptAnswer, err := ai.SendRequestWithResend(message, config.Configuration.Ai.GoodPrompt)
 	if err != nil {
 		return fmt.Errorf("send request error: %w", err)
 	}
@@ -59,7 +59,7 @@ func sayCommand(update telego.Update, chatID int64) error {
 	logger.Log.Info(fmt.Sprintf("Comand /say start works: %v", update.Message.Chat))
 
 	message := strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/say"))
-	gptAnswer, err := openai.SendRequestWithResend("["+message+"]", config.Configuration.Openai.SayPrompt)
+	gptAnswer, err := ai.SendRequestWithResend("["+message+"]", config.Configuration.Ai.SayPrompt)
 	if err != nil {
 		return fmt.Errorf("send request error: %w", err)
 	}
@@ -86,13 +86,13 @@ func shortCommand(update telego.Update, chatID int64) error {
 
 	if update.Message != nil && update.Message.ReplyToMessage != nil {
 		replyToMessage := update.Message.ReplyToMessage.Text
-		gptAnswer, err = openai.SendRequestWithResend("["+replyToMessage+"]", config.Configuration.Openai.ShortPrompt)
+		gptAnswer, err = ai.SendRequestWithResend("["+replyToMessage+"]", config.Configuration.Ai.ShortPrompt)
 		if err != nil {
 			return fmt.Errorf("send reply message request error: %w", err)
 		}
 	} else {
 		message = strings.TrimSpace(strings.TrimPrefix(update.Message.Text, "/short"))
-		gptAnswer, err = openai.SendRequestWithResend("["+message+"]", config.Configuration.Openai.ShortPrompt)
+		gptAnswer, err = ai.SendRequestWithResend("["+message+"]", config.Configuration.Ai.ShortPrompt)
 		if err != nil {
 			return fmt.Errorf("send request error: %w", err)
 		}

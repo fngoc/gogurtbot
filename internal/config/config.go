@@ -18,7 +18,7 @@ type Config struct {
 		MaxQueueSize   int    `mapstructure:"maxQueueSize"`
 	} `mapstructure:"telegram"`
 
-	Openai struct {
+	Ai struct {
 		CountRepeatedRequests int    `mapstructure:"countRepeatedRequests"`
 		Token                 string `mapstructure:"token"`
 		Model                 string `mapstructure:"model"`
@@ -27,7 +27,7 @@ type Config struct {
 		GoodPrompt            string `mapstructure:"goodPrompt"`
 		SayPrompt             string `mapstructure:"sayPrompt"`
 		ShortPrompt           string `mapstructure:"shortPrompt"`
-	} `mapstructure:"openai"`
+	} `mapstructure:"ai"`
 }
 
 // Configuration инстант конфигурации

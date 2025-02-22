@@ -5,7 +5,7 @@ telegram:
   maxQueueSize: #Максимальное кол-во сообщений в буфере сообщений
   debugChatID: #Куда будет приходить дебаг сообщения бота
 
-openai:
+ai:
   countRepeatedRequests: #Кол-во попыток отправки запросов
   token: #Токен ML
   model: #Модель ML

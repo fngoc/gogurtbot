@@ -1,4 +1,4 @@
-package openai
+package ai
 
 import (
 	"context"
@@ -15,15 +15,15 @@ var client *gpt.Client
 
 // Initialize инициализация конфигурации и клиента gpt модели
 func Initialize() {
-	conf := gpt.DefaultConfig(config.Configuration.Openai.Token)
-	conf.BaseURL = config.Configuration.Openai.GptURL
+	conf := gpt.DefaultConfig(config.Configuration.Ai.Token)
+	conf.BaseURL = config.Configuration.Ai.GptURL
 	client = gpt.NewClientWithConfig(conf)
 	logger.Log.Info("Client gpt initialized")
 }
 
 // SendRequestWithResend отправка запроса с докатом в случае ошибки со стороны api
 func SendRequestWithResend(message, prompt string) (string, error) {
-	for i := 0; i < config.Configuration.Openai.CountRepeatedRequests; i++ {
+	for i := 0; i < config.Configuration.Ai.CountRepeatedRequests; i++ {
 		answer, err := SendMessageWithPrompt(message, prompt)
 		randomSecond := rand.Intn(5)
 		timeSleep := time.Duration(randomSecond * int(time.Second))
@@ -32,14 +32,14 @@ func SendRequestWithResend(message, prompt string) (string, error) {
 			logger.Log.Warn(
 				fmt.Sprintf(
 					"Error sending message: %v attempt to resend the request via %ds, we'll repeat %d more times",
-					err, timeSleep/time.Second, config.Configuration.Openai.CountRepeatedRequests-i,
+					err, timeSleep/time.Second, config.Configuration.Ai.CountRepeatedRequests-i,
 				),
 			)
 		} else if answer == "" {
 			logger.Log.Warn(
 				fmt.Sprintf(
 					"Empty answer from ML api, attempt to resend the request via %ds we'll repeat %d more times",
-					timeSleep/time.Second, config.Configuration.Openai.CountRepeatedRequests-i,
+					timeSleep/time.Second, config.Configuration.Ai.CountRepeatedRequests-i,
 				),
 			)
 		} else {
@@ -55,7 +55,7 @@ func SendRequestWithResend(message, prompt string) (string, error) {
 func SendMessageWithPrompt(message, prompt string) (string, error) {
 	logger.Log.Debug(fmt.Sprintf("Sending message: %s", message))
 	req := gpt.ChatCompletionRequest{
-		Model: config.Configuration.Openai.Model,
+		Model: config.Configuration.Ai.Model,
 		Messages: []gpt.ChatCompletionMessage{
 			{
 				Role:    "system",

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"gogurtbot/internal/ai"
 	"gogurtbot/internal/bot"
 	"gogurtbot/internal/config"
 	"gogurtbot/internal/logger"
-	"gogurtbot/internal/openai"
 )
 
 // main старт программы
@@ -20,7 +20,7 @@ func main() {
 		logger.Log.Fatal(fmt.Sprintf("Error reading config file: %s", err))
 	}
 
-	openai.Initialize()
+	ai.Initialize()
 
 	if err := bot.Run(); err != nil {
 		logger.Log.Fatal(fmt.Sprintf("Error run bot: %v", err))
