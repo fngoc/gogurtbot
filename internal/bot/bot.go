@@ -74,6 +74,10 @@ func readingMessage(updates <-chan telego.Update) {
 			if err := timeoutMiddleware(10, update, chatID, goodCommand); err != nil {
 				logger.Log.Error(err.Error())
 			}
+		case strings.HasPrefix(update.Message.Text, "/short"):
+			if err := timeoutMiddleware(10, update, chatID, shortCommand); err != nil {
+				logger.Log.Error(err.Error())
+			}
 		case strings.HasPrefix(update.Message.Text, "/say"):
 			if err := timeoutMiddleware(10, update, chatID, sayCommand); err != nil {
 				logger.Log.Error(err.Error())

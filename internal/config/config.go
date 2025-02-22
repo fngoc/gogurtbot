@@ -25,6 +25,7 @@ type Config struct {
 		WhatPrompt            string `mapstructure:"whatPrompt"`
 		GoodPrompt            string `mapstructure:"goodPrompt"`
 		SayPrompt             string `mapstructure:"sayPrompt"`
+		ShortPrompt           string `mapstructure:"shortPrompt"`
 	} `mapstructure:"openai"`
 }
 
