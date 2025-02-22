@@ -8,7 +8,9 @@ telegram:
 openai:
   countRepeatedRequests: #Кол-во попыток отправки запросов
   token: #Токен ML
+  model: #Модель ML
   gptURL: #URL ML
   whatPrompt: #Промпт для ML, команда /what
   goodPrompt: #Промпт для ML, команда /good
   sayPrompt: #Промпт для ML, команда /say
+  shortPrompt: #Промпт для ML, команда /short

@@ -21,6 +21,7 @@ type Config struct {
 	Openai struct {
 		CountRepeatedRequests int    `mapstructure:"countRepeatedRequests"`
 		Token                 string `mapstructure:"token"`
+		Model                 string `mapstructure:"model"`
 		GptURL                string `mapstructure:"gptURL"`
 		WhatPrompt            string `mapstructure:"whatPrompt"`
 		GoodPrompt            string `mapstructure:"goodPrompt"`

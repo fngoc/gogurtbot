@@ -55,7 +55,7 @@ func SendRequestWithResend(message, prompt string) (string, error) {
 func SendMessageWithPrompt(message, prompt string) (string, error) {
 	logger.Log.Debug(fmt.Sprintf("Sending message: %s", message))
 	req := gpt.ChatCompletionRequest{
-		Model: "deepseek/deepseek-chat:free",
+		Model: config.Configuration.Openai.Model,
 		Messages: []gpt.ChatCompletionMessage{
 			{
 				Role:    "system",
