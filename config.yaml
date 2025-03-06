@@ -14,3 +14,8 @@ ai:
   goodPrompt: #Промпт для ML, команда /good
   sayPrompt: #Промпт для ML, команда /say
   shortPrompt: #Промпт для ML, команда /short
+
+birthdays:
+  - name:
+    date:
+

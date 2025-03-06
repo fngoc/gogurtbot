@@ -5,6 +5,7 @@ import (
 	"gogurtbot/internal/ai"
 	"gogurtbot/internal/bot"
 	"gogurtbot/internal/config"
+	"gogurtbot/internal/cron"
 	"gogurtbot/internal/logger"
 )
 
@@ -24,5 +25,9 @@ func main() {
 
 	if err := bot.Run(); err != nil {
 		logger.Log.Fatal(fmt.Sprintf("Error run bot: %v", err))
+	}
+
+	if err := cron.BirthdaysScheduler(); err != nil {
+		logger.Log.Fatal(fmt.Sprintf("Error cron birthdays: %v", err))
 	}
 }
