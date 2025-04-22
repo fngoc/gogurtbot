@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"gogurtbot/internal/ai"
-	"gogurtbot/internal/bot"
-	"gogurtbot/internal/config"
-	"gogurtbot/internal/logger"
+
+	"github.com/fngoc/gogurtbot/internal/ai"
+	"github.com/fngoc/gogurtbot/internal/bot"
+	"github.com/fngoc/gogurtbot/internal/config"
+	"github.com/fngoc/gogurtbot/internal/logger"
 )
 
 // main старт программы

@@ -2,8 +2,9 @@ package bot
 
 import (
 	"fmt"
-	"gogurtbot/internal/logger"
 	"time"
+
+	"github.com/fngoc/gogurtbot/internal/logger"
 
 	"github.com/mymmrac/telego"
 )

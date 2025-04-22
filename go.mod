@@ -1,4 +1,4 @@
-module gogurtbot
+module github.com/fngoc/gogurtbot
 
 go 1.22.3
 

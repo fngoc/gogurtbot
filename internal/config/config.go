@@ -2,7 +2,8 @@ package config
 
 import (
 	"fmt"
-	"gogurtbot/internal/logger"
+
+	"github.com/fngoc/gogurtbot/internal/logger"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -56,7 +57,7 @@ func LoadConfig() error {
 		if err := viper.Unmarshal(&Configuration); err != nil {
 			logger.Log.Info(fmt.Sprintf("Failed to unmarshal config: %v", err))
 		} else {
-			logger.Log.Info(fmt.Sprintf("Reloaded config"))
+			logger.Log.Info("Reloaded config")
 		}
 	})
 

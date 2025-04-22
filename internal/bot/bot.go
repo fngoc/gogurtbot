@@ -2,9 +2,10 @@ package bot
 
 import (
 	"fmt"
-	"gogurtbot/internal/config"
-	"gogurtbot/internal/logger"
 	"strings"
+
+	"github.com/fngoc/gogurtbot/internal/config"
+	"github.com/fngoc/gogurtbot/internal/logger"
 
 	"github.com/mymmrac/telego"
 )
@@ -44,7 +45,7 @@ func readingMessage(updates <-chan telego.Update) {
 	for update := range updates {
 		// Проверка, на пустой ответ от telego
 		if update.Message == nil {
-			logger.Log.Info(fmt.Sprintf("Update message is empty"))
+			logger.Log.Info("Update message is empty")
 			continue
 		}
 

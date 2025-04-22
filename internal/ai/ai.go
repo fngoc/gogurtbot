@@ -3,10 +3,11 @@ package ai
 import (
 	"context"
 	"fmt"
-	"gogurtbot/internal/config"
-	"gogurtbot/internal/logger"
 	"math/rand"
 	"time"
+
+	"github.com/fngoc/gogurtbot/internal/config"
+	"github.com/fngoc/gogurtbot/internal/logger"
 
 	gpt "github.com/sashabaranov/go-openai"
 )

@@ -2,10 +2,11 @@ package bot
 
 import (
 	"fmt"
-	"gogurtbot/internal/ai"
-	"gogurtbot/internal/config"
-	"gogurtbot/internal/logger"
 	"strings"
+
+	"github.com/fngoc/gogurtbot/internal/ai"
+	"github.com/fngoc/gogurtbot/internal/config"
+	"github.com/fngoc/gogurtbot/internal/logger"
 
 	"github.com/mymmrac/telego"
 )
@@ -22,7 +23,7 @@ func whatCommand(update telego.Update, chatID int64) error {
 
 	if err := sendToChatMessage(chatID, gptAnswer+"\n#what"); err != nil {
 		logger.Log.Error(err.Error())
-		if err := sendToChatMessage(chatID, fmt.Sprintf("Api нейронки выдала ошибку :(")); err != nil {
+		if err := sendToChatMessage(chatID, "Api нейронки выдала ошибку :("); err != nil {
 			return fmt.Errorf("error sending in chat about api error: %w", err)
 		}
 	}
@@ -44,7 +45,7 @@ func goodCommand(update telego.Update, chatID int64) error {
 
 	if err := sendToChatMessage(chatID, gptAnswer+"\n#good"); err != nil {
 		logger.Log.Error(err.Error())
-		if err := sendToChatMessage(chatID, fmt.Sprintf("Api нейронки выдала ошибку :(")); err != nil {
+		if err := sendToChatMessage(chatID, "Api нейронки выдала ошибку :("); err != nil {
 			return fmt.Errorf("error sending in chat about api error: %w", err)
 		}
 	}
@@ -66,7 +67,7 @@ func sayCommand(update telego.Update, chatID int64) error {
 
 	if err := sendToChatMessage(chatID, gptAnswer+"\n#say"); err != nil {
 		logger.Log.Error(err.Error())
-		if err := sendToChatMessage(chatID, fmt.Sprintf("Api нейронки выдала ошибку :(")); err != nil {
+		if err := sendToChatMessage(chatID, "Api нейронки выдала ошибку :("); err != nil {
 			return fmt.Errorf("error sending in chat about api error: %w", err)
 		}
 	}
@@ -100,7 +101,7 @@ func shortCommand(update telego.Update, chatID int64) error {
 
 	if err = sendToChatMessage(chatID, gptAnswer+"\n#short"); err != nil {
 		logger.Log.Error(err.Error())
-		if err = sendToChatMessage(chatID, fmt.Sprintf("Api нейронки выдала ошибку :(")); err != nil {
+		if err = sendToChatMessage(chatID, "Api нейронки выдала ошибку :("); err != nil {
 			return fmt.Errorf("error sending in chat about api error: %w", err)
 		}
 	}

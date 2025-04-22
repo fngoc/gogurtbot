@@ -2,9 +2,10 @@ package bot
 
 import (
 	"fmt"
-	"gogurtbot/internal/config"
-	"gogurtbot/internal/logger"
 	"strings"
+
+	"github.com/fngoc/gogurtbot/internal/config"
+	"github.com/fngoc/gogurtbot/internal/logger"
 
 	"github.com/mymmrac/telego"
 	tu "github.com/mymmrac/telego/telegoutil"
